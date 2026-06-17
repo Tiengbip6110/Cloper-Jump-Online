@@ -146,6 +146,10 @@ body{font-family:'Nunito',sans-serif;background:#e8f4ff;color:#1a1a2e;overflow:h
 /* Book progress */
 .book-card{border-radius:18px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all .2s;border:2px solid rgba(255,255,255,.9)}
 .book-card:hover{transform:scale(1.02)}
+
+.icon-gold { display:inline-block; font-style:normal; filter:drop-shadow(0 2px 4px rgba(255,179,0,0.5)); transform:scale(1.1); }
+.icon-gem { display:inline-block; font-style:normal; filter:drop-shadow(0 2px 4px rgba(30,144,255,0.6)); transform:scale(1.1); }
+.icon-box { display:inline-block; font-style:normal; filter:drop-shadow(0 2px 4px rgba(139,69,19,0.5)); }
 </style>
 </head>
 <body>
@@ -180,7 +184,8 @@ body{font-family:'Nunito',sans-serif;background:#e8f4ff;color:#1a1a2e;overflow:h
     <div style="display:flex;gap:8px;align-items:center">
       <div class="cur-badge">🪙 <span id="lobby-coins">0</span></div>
       <div class="cur-badge" style="color:#7c3aed">💎 <span id="lobby-gems">0</span></div>
-      <button class="top-icon gear" onclick="openSettings()">⚙️</button>
+      <button class="top-icon gear" onclick="openModal('modal-social')">👥</button>
+<button class="top-icon gear" onclick="openSettings()">⚙️</button>
     </div>
   </div>
 
@@ -271,25 +276,47 @@ body{font-family:'Nunito',sans-serif;background:#e8f4ff;color:#1a1a2e;overflow:h
     </div>
     <!-- Chơi Online (V11) -->
     <div class="anim-slide" style="animation-delay:.36s;opacity:0;width:100%">
-      <button onclick="openOnlineModal()" style="width:100%;padding:16px;border:none;border-radius:30px;background:linear-gradient(135deg,#1e90ff,#43a047);color:#fff;font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;cursor:pointer;box-shadow:0 8px 20px rgba(30,144,255,.35);display:flex;align-items:center;justify-content:center;gap:8px">🌐 CHƠI ONLINE</button>
+  <button onclick="openModal('modal-online-p2p')" style="width:100%;padding:16px;border:none;border-radius:30px;background:linear-gradient(135deg,#1e90ff,#43a047);color:#fff;font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;cursor:pointer;box-shadow:0 8px 20px rgba(30,144,255,.35);display:flex;align-items:center;justify-content:center;gap:8px">🌐 CHƠI ONLINE</button>
+</div>
+<div class="anim-slide" style="animation-delay:.4s;opacity:0;width:100%;margin-top:10px;">
+  <div style="display:flex;justify-content:space-between;width:100%;padding:0 10px;">
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button onclick="showScreen('scr-balo')" class="btn-icon" style="padding:10px;border-radius:12px;">🎒 Balo</button>
+      <button onclick="showScreen('scr-lootbox')" class="btn-icon" style="padding:10px;border-radius:12px;">📦 Loot box</button>
+      <button onclick="showScreen('scr-cards')" class="btn-icon" style="padding:10px;border-radius:12px;">🃏 Thẻ</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-end;">
+      <button onclick="showScreen('scr-event')" class="btn-icon" style="padding:10px;border-radius:12px;">🎉 Sự kiện</button>
+      <button onclick="showScreen('scr-shop')" class="btn-icon" style="padding:10px;border-radius:12px;">🛒 Shop</button>
+      <button onclick="openModal('modal-vqmm')" class="btn-icon" style="padding:10px;border-radius:12px;">🎡 VQMM</button>
     </div>
   </div>
-
-  <!-- Bottom: Nhiệm vụ / Follow / Hướng dẫn -->
-  <div style="position:absolute;left:0;right:0;bottom:16px;z-index:3;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:0 20px;max-width:460px;margin:0 auto">
-    <button onclick="showScreen('scr-mission')" style="background:transparent;border:none;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;color:#1a1a2e;position:relative">
-      <span style="font-size:24px;position:relative">📋<span id="quest-badge" style="position:absolute;top:-6px;right:-10px;background:#ff4757;color:#fff;font-size:.6rem;font-weight:900;border-radius:10px;padding:1px 6px;display:none">0</span></span>
-      <span style="font-size:.72rem;font-weight:800">Nhiệm vụ</span>
-    </button>
-    <button onclick="openFollowModal()" style="background:rgba(255,255,255,.85);border:1.5px solid rgba(255,255,255,.95);border-radius:22px;padding:10px 6px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:900;font-size:.7rem;letter-spacing:1.5px;color:#1a1a2e;box-shadow:0 4px 14px rgba(0,0,0,.08)">FOLLOW US</button>
-    <button onclick="showScreen('scr-howto')" style="background:transparent;border:none;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;color:#1a1a2e">
-      <span style="font-size:24px;font-weight:900">?</span>
-      <span style="font-size:.72rem;font-weight:800">Hướng dẫn</span>
-    </button>
-  </div>
-  <div style="position:absolute;bottom:4px;color:rgba(26,26,46,.22);font-size:.6rem;letter-spacing:2px;z-index:2">v11.0 • CLOPER JUMP ONLINE</div>
+</div>
 </div>
 
+  <!-- Bottom: Navbar (Task 1) -->
+  <div id="bottom-navbar" style="position:absolute;left:0;right:0;bottom:16px;z-index:10;display:flex;justify-content:space-around;align-items:center;padding:10px 20px;max-width:460px;margin:0 auto;background:rgba(255,255,255,0.85);backdrop-filter:blur(10px);border-radius:30px;box-shadow:0 8px 32px rgba(30,144,255,0.2);border:1.5px solid rgba(255,255,255,0.9);">
+    <button onclick="openFollowModal()" style="background:transparent;border:none;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;color:#1a1a2e">
+      <span style="font-size:22px;">🌐</span>
+      <span style="font-size:0.65rem;font-weight:800">Follow US</span>
+    </button>
+    <button onclick="showScreen('scr-mission')" style="background:transparent;border:none;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;color:#1a1a2e;position:relative">
+      <span style="font-size:22px;">📋<span id="quest-badge" style="position:absolute;top:-6px;right:-10px;background:#ff4757;color:#fff;font-size:.6rem;font-weight:900;border-radius:10px;padding:1px 6px;display:none">0</span></span>
+      <span style="font-size:0.65rem;font-weight:800">Nhiệm vụ</span>
+    </button>
+    <button onclick="showScreen('scr-lobby')" style="background:linear-gradient(135deg,#ff4757,#ff6b81);border:none;border-radius:50%;width:50px;height:50px;display:flex;justify-content:center;align-items:center;cursor:pointer;color:#fff;box-shadow:0 4px 15px rgba(255,71,87,0.4);transform:translateY(-10px)">
+      <span style="font-size:24px;">🏠</span>
+    </button>
+    <button onclick="showScreen('scr-howto')" style="background:transparent;border:none;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;color:#1a1a2e">
+      <span style="font-size:22px;font-weight:900">❓</span>
+      <span style="font-size:0.65rem;font-weight:800">Hướng dẫn</span>
+    </button>
+    <button onclick="showScreen('scr-profile')" style="background:transparent;border:none;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;color:#1a1a2e">
+      <span style="font-size:22px;">👤</span>
+      <span style="font-size:0.65rem;font-weight:800">Profile</span>
+    </button>
+  </div>
+</div>
 <!-- ══════════ PET SELECT ══════════ -->
 <div id="scr-pet" class="screen lobby-bg">
   <div style="position:relative;z-index:1;display:flex;flex-direction:column;height:100%;width:100%;max-width:480px;padding:20px 18px 0">
@@ -772,6 +799,216 @@ body{font-family:'Nunito',sans-serif;background:#e8f4ff;color:#1a1a2e;overflow:h
 <div id="toast"></div>
 
 <!-- THREE.JS -->
+
+<!-- ONLINE P2P MODAL -->
+<div class="modal-bg" id="modal-online-p2p">
+  <div class="modal" style="text-align:center;">
+    <h3>🌐 CHƠI ONLINE P2P</h3>
+    <div style="background:#f5f6fa;padding:15px;border-radius:10px;margin-bottom:10px;">
+      <button onclick="hostP2PGame()" class="btn-primary" style="width:100%;padding:10px;font-size:0.9rem;">Tạo Phòng</button>
+      <p id="p2p-host-id" style="margin-top:10px;font-weight:bold;color:#ff4757;"></p>
+    </div>
+    <div style="background:#f5f6fa;padding:15px;border-radius:10px;">
+      <input type="text" id="p2p-join-input" placeholder="ID Phòng..." style="width:100%;padding:10px;border-radius:8px;margin-bottom:10px;">
+      <button onclick="joinP2PGame()" class="btn-primary" style="width:100%;padding:10px;font-size:0.9rem;">Vào Phòng</button>
+    </div>
+    <button onclick="closeModal('modal-online-p2p')" class="btn-sec" style="margin-top:15px;width:100%;">Đóng</button>
+  </div>
+</div>
+
+<!-- CSKH LIVE CHAT -->
+<div id="chat-cskh-widget" style="position:fixed;right:20px;bottom:80px;z-index:90;">
+  <button onclick="toggleCSKH()" style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#1e90ff,#4facfe);color:#fff;border:none;box-shadow:0 4px 15px rgba(30,144,255,0.4);cursor:pointer;font-size:30px;display:flex;justify-content:center;align-items:center;">💬</button>
+</div>
+<div id="chat-cskh-window" style="display:none;position:fixed;right:20px;bottom:150px;width:300px;height:400px;background:#fff;border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,0.2);z-index:90;flex-direction:column;overflow:hidden;border:1px solid #eee;">
+  <div style="background:linear-gradient(135deg,#1e90ff,#4facfe);color:#fff;padding:15px;font-weight:bold;display:flex;justify-content:space-between;align-items:center;">
+    <span>Hỗ trợ CSKH</span>
+    <button onclick="toggleCSKH()" style="background:transparent;border:none;color:#fff;font-weight:bold;cursor:pointer;">X</button>
+  </div>
+  <div id="chat-cskh-messages" style="flex:1;padding:10px;overflow-y:auto;background:#f5f6fa;display:flex;flex-direction:column;gap:10px;"></div>
+  <div style="padding:10px;background:#fff;border-top:1px solid #eee;display:flex;gap:5px;">
+    <input type="text" id="chat-cskh-input" placeholder="Nhập tin nhắn..." style="flex:1;padding:8px;border-radius:20px;border:1px solid #ccc;outline:none;">
+    <button onclick="sendCSKH()" style="background:transparent;border:none;color:#1e90ff;font-weight:bold;cursor:pointer;">Gửi</button>
+  </div>
+</div>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<div class="screen" id="scr-auth" style="background:#e8f4ff;z-index:50;">
+  <div style="width:100%;max-width:400px;margin:auto;padding:20px;">
+    <div class="card-bright" style="padding:30px 20px;text-align:center;">
+      <h2 style="font-family:'Orbitron',sans-serif;color:#ff4757;margin-bottom:20px;">CLOPER JUMP</h2>
+      <div id="auth-login-form">
+        <h3 style="margin-bottom:15px;">Đăng Nhập</h3>
+        <input type="email" id="login-email" placeholder="Email" style="width:100%;padding:12px;margin-bottom:10px;border-radius:8px;border:1px solid #ccc;">
+        <input type="password" id="login-pass" placeholder="Password" style="width:100%;padding:12px;margin-bottom:15px;border-radius:8px;border:1px solid #ccc;">
+        <button onclick="handleLogin()" class="btn-primary" style="width:100%;padding:12px;font-size:1rem;margin-bottom:10px;">Login</button>
+        <button onclick="handleGoogleLogin()" style="width:100%;padding:12px;background:#fff;border:1px solid #ddd;border-radius:50px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;margin-bottom:15px;">Continue with Google</button>
+        <p style="font-size:0.8rem;">Chưa có tài khoản? <a href="#" onclick="toggleAuthForm()" style="color:#1e90ff;text-decoration:none;font-weight:700;">Đăng ký ngay</a></p>
+      </div>
+      <div id="auth-register-form" style="display:none;">
+        <h3 style="margin-bottom:15px;">Đăng Ký</h3>
+        <input type="text" id="reg-name" placeholder="Full Name" style="width:100%;padding:12px;margin-bottom:10px;border-radius:8px;border:1px solid #ccc;">
+        <input type="email" id="reg-email" placeholder="Email" style="width:100%;padding:12px;margin-bottom:10px;border-radius:8px;border:1px solid #ccc;">
+        <input type="password" id="reg-pass" placeholder="Password" style="width:100%;padding:12px;margin-bottom:15px;border-radius:8px;border:1px solid #ccc;">
+        <button onclick="handleRegister()" class="btn-primary" style="width:100%;padding:12px;font-size:1rem;margin-bottom:10px;">Register</button>
+        <p style="font-size:0.8rem;">Đã có tài khoản? <a href="#" onclick="toggleAuthForm()" style="color:#1e90ff;text-decoration:none;font-weight:700;">Đăng nhập</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="scr-profile" style="background:#e8f4ff;z-index:20;">
+  <div style="width:100%;max-width:460px;margin:0 auto;padding:20px;height:100%;display:flex;flex-direction:column;gap:15px;overflow-y:auto;">
+    <h2 style="text-align:center;color:#1a1a2e;margin-top:10px;">TRANG CÁ NHÂN</h2>
+    <div class="card-bright" style="padding:20px;display:flex;flex-direction:column;gap:15px;">
+      <div style="display:flex;align-items:center;gap:15px;">
+        <div style="width:80px;height:80px;background:#fff;border-radius:20px;border:2px solid #ff4757;display:flex;justify-content:center;align-items:center;overflow:hidden;box-shadow:0 4px 10px rgba(255,71,87,0.2);">
+          <span style="font-size:40px;">🌆</span>
+        </div>
+        <div style="flex:1;">
+          <h3 id="profile-name" style="margin-bottom:5px;">Người chơi</h3>
+          <div style="display:flex;justify-content:space-between;font-size:0.9rem;color:#555;">
+            <span>Server: <strong id="profile-server">Việt Nam</strong></span>
+            <span>👍 <strong id="profile-likes">0</strong></span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.9rem;color:#555;margin-top:5px;">
+            <span>Lv: <strong id="profile-lv">1</strong></span>
+            <span style="display:flex;align-items:center;gap:5px;">UID: <strong id="profile-uid">0000</strong> <button onclick="copyUID()" style="border:none;background:#e8f4ff;border-radius:4px;padding:2px 6px;cursor:pointer;font-size:0.7rem;">Copy</button></span>
+          </div>
+        </div>
+      </div>
+      <button onclick="handleLogout()" class="btn-sec" style="width:100%;color:#ff4757;border-color:#ff4757;">Đăng Xuất</button>
+      <button onclick="showScreen('scr-lobby')" class="btn-sec" style="width:100%;">Trở về sảnh</button>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="scr-admin" style="background:#2f3640;z-index:100;">
+  <div style="width:100%;height:100%;display:flex;flex-direction:column;color:#fff;padding:20px;box-sizing:border-box;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid #555;padding-bottom:10px;">
+      <h2>🛡️ ADMIN DASHBOARD</h2>
+      <button onclick="logoutAdmin()" class="btn-sec" style="background:#ff4757;color:#fff;border:none;">Thoát</button>
+    </div>
+
+    <div style="display:flex;gap:20px;flex:1;overflow:hidden;">
+      <div style="width:200px;display:flex;flex-direction:column;gap:10px;">
+        <button onclick="switchAdminTab('users')" class="btn-sec" style="text-align:left;">👥 Quản lý User</button>
+        <button onclick="switchAdminTab('security')" class="btn-sec" style="text-align:left;">🔒 Bảo mật & IP</button>
+      </div>
+      <div id="admin-content" style="flex:1;background:#353b48;border-radius:10px;padding:20px;overflow-y:auto;text-align:left;">
+         <h3>Chào mừng Admin</h3>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="screen" id="scr-game-over" style="background:rgba(0,0,0,0.6);z-index:80;justify-content:center;align-items:center;">
+  <div class="card-bright" style="width:300px;text-align:center;padding:20px;border:none;">
+    <h2 style="color:#ff4757;font-family:'Orbitron',sans-serif;margin-bottom:10px;">BẠN ĐÃ NGÃ</h2>
+    <p>Điểm: <strong id="go-score">0</strong> Km</p>
+    <p>Vàng cạnh tranh: <strong id="go-coins">0</strong> 🪙</p>
+    <p style="margin-top:15px;color:#1e90ff;font-size:0.9rem;">Đang tự động hồi sinh... (<span id="go-countdown">3</span>s)</p>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-vqmm">
+  <div class="modal" style="width:90%;max-width:500px;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);">
+    <h3>🎡 VÒNG QUAY MAY MẮN</h3>
+    <div style="display:flex;gap:10px;justify-content:center;margin-bottom:15px;">
+      <button onclick="switchVQMM('gold')" class="btn-sec" id="tab-vqmm-gold">Vàng</button>
+      <button onclick="switchVQMM('gem')" class="btn-sec" id="tab-vqmm-gem">Kim Cương</button>
+      <button onclick="switchVQMM('ticket')" class="btn-sec" id="tab-vqmm-ticket" style="background:rgba(30,144,255,0.2)">Vé 🎟️</button>
+    </div>
+    <div id="vqmm-gold" class="vqmm-content" style="display:none;text-align:center;">
+      <p>1 vòng: 50 🪙 | 10 vòng: 500 🪙</p>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:10px;">
+        <button onclick="spinVQMM('gold', 1)" class="btn-primary" style="padding:10px 20px;font-size:0.9rem;">Quay 1</button>
+        <button onclick="spinVQMM('gold', 10)" class="btn-primary" style="padding:10px 20px;font-size:0.9rem;">Quay 10</button>
+      </div>
+    </div>
+    <div id="vqmm-gem" class="vqmm-content" style="display:none;text-align:center;">
+      <p>1 vòng: 20 💎 | 10 vòng: 200 💎</p>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:10px;">
+        <button onclick="spinVQMM('gem', 1)" class="btn-primary" style="padding:10px 20px;font-size:0.9rem;background:linear-gradient(135deg,#1e90ff,#4facfe);">Quay 1</button>
+      </div>
+    </div>
+    <div id="vqmm-ticket" class="vqmm-content" style="display:block;text-align:center;">
+      <p>Giá vé tăng dần mỗi vòng (9 🎟️ -> 499 🎟️)</p>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:10px;">
+        <button onclick="spinVQMMTicket()" id="btn-spin-ticket" class="btn-primary" style="padding:10px 20px;font-size:0.9rem;background:linear-gradient(135deg,#ff4757,#ff6b81);">Quay (9 🎟️)</button>
+      </div>
+    </div>
+    <button onclick="closeModal('modal-vqmm')" class="btn-sec" style="margin-top:20px;width:100%;">Đóng</button>
+  </div>
+</div>
+<div class="modal-bg" id="modal-vqmm-result" ondblclick="skipVQMMAnim()">
+  <div class="modal" style="text-align:center;">
+    <h3>🎉 KẾT QUẢ 🎉</h3>
+    <div id="vqmm-result-list" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:20px 0;max-height:200px;overflow-y:auto;"></div>
+    <p style="font-size:0.8rem;color:#888;">(Chạm 2 lần để bỏ qua)</p>
+    <button onclick="closeModal('modal-vqmm-result')" class="btn-primary">Nhận Quà</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-payment">
+  <div class="modal" style="width:90%;max-width:400px;">
+    <h3>💳 NẠP TIỀN / MUA GÓI</h3>
+    <div style="display:flex;justify-content:center;margin:15px 0;">
+      <img src="IMG_20260616_225056_578.jpg" alt="QR Code" style="max-width:100%;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+    </div>
+    <div style="text-align:left;font-size:0.9rem;margin-bottom:15px;background:#f5f6fa;padding:10px;border-radius:8px;">
+      <p><strong>Bank:</strong> VP-BANK (0704749421)</p>
+      <p><strong>Nội dung ck:</strong> <span id="payment-code" style="font-weight:bold;color:#ff4757;"></span></p>
+    </div>
+    <select id="payment-pack" style="width:100%;padding:10px;margin-bottom:10px;border-radius:8px;">
+      <option value="ticket_113">113 🎟️ = 10.000 vnđ</option>
+      <option value="gem_283">283 💎 = 10.000 vnđ</option>
+    </select>
+    <button onclick="confirmPayment()" class="btn-primary" style="width:100%;">Xác Nhận Đã Chuyển</button>
+    <button onclick="closeModal('modal-payment')" class="btn-sec" style="width:100%;margin-top:10px;">Hủy</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-social">
+  <div class="modal" style="width:90%;max-width:500px;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);">
+    <h3>👥 CỘNG ĐỒNG</h3>
+    <div style="display:flex;gap:10px;justify-content:center;margin-bottom:15px;">
+      <button onclick="switchSocial('friends')" class="btn-sec" id="tab-social-friends" style="background:rgba(30,144,255,0.2)">Bạn Bè</button>
+      <button onclick="switchSocial('mail')" class="btn-sec" id="tab-social-mail">Hòm Thư</button>
+    </div>
+
+    <div id="social-friends" class="social-content" style="display:block;">
+      <div style="display:flex;gap:10px;margin-bottom:15px;">
+        <input type="text" id="friend-id-input" placeholder="Nhập UID kết bạn..." style="flex:1;padding:10px;border-radius:8px;border:1px solid #ccc;">
+        <button onclick="addFriend()" class="btn-primary" style="padding:10px 15px;font-size:0.9rem;">Thêm</button>
+      </div>
+      <div id="friends-list" style="max-height:250px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;">
+         <div style="display:flex;justify-content:space-between;align-items:center;background:#f5f6fa;padding:10px;border-radius:8px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+               <div>
+                  <div style="font-weight:bold;">Cáo Đỏ (ID: 998877)</div>
+                  <div style="font-size:0.8rem;color:green;">🟢 Online</div>
+               </div>
+            </div>
+            <button class="btn-sec" style="font-size:0.8rem;padding:5px 10px;">Mời Chơi</button>
+         </div>
+      </div>
+    </div>
+
+    <div id="social-mail" class="social-content" style="display:none;">
+      <div id="mail-list" style="max-height:250px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;">
+         <div style="background:#e8f4ff;border-left:4px solid #1e90ff;padding:10px;border-radius:4px;">
+            <div style="font-weight:bold;color:#1e90ff;">[Hệ Thống] Quà đền bù bảo trì</div>
+            <button class="btn-sec" style="font-size:0.8rem;padding:5px 10px;">Đã Nhận</button>
+         </div>
+      </div>
+    </div>
+    <button onclick="closeModal('modal-social')" class="btn-sec" style="margin-top:20px;width:100%;">Đóng</button>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <!-- PEERJS (V11: realtime online rooms over WebRTC) -->
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
@@ -2033,8 +2270,14 @@ function renderWaitingHUD(){
 }
 
 function showScreen(id){
+
+  const targetScreen = document.getElementById(id);
+if(targetScreen) {
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id)?.classList.add('active');
+  targetScreen.classList.add('active');
+} else {
+  console.warn("Screen not found: " + id);
+}
   // Init per-screen
   if(id==='scr-pet'){initPetPreview(); _tempPet=STATE.playerSkin; setPetPreview(_tempPet); updatePetInfo(_tempPet); renderPetGrid();}
   if(id==='scr-obs'){renderBoardGrid(); renderPlaneGrid();}
@@ -2048,6 +2291,14 @@ function showScreen(id){
   if(id==='scr-shop')renderShopScreen();
   if(id==='scr-map')renderMapList();
   if(id==='scr-lobby'){updateCurrencyHUD(); updateQuestBadge(); updateLobbyPetPreview(STATE.playerSkin);}
+  const bNav = document.getElementById('bottom-navbar');
+  if(bNav) {
+    if(id === 'scr-auth' || id === 'scr-game' || id === 'scr-game-over' || id === 'scr-admin') {
+      bNav.style.display = 'none';
+    } else {
+      bNav.style.display = 'flex';
+    }
+  }
 }
 
 // Balo sub-menu toggle (Task 4)
@@ -2761,7 +3012,7 @@ class GameEngine {
     this.obstacles=[];this.rollingRocks=[];this.pits=[];this.items=[];this.buffDrops=[];this.particles=[];
     // Task 7: reduced initial speed
     this.velY=0;this.gravity=-.072;this.jumpPow=.78;this.isJump=false;this.wasInJump=false;
-    this.targetX=0;this.LIMITX=7;this.baseSpeed=3.50;this.speed=3.50;this.maxSpeed=4.0; // Task 7: slower
+    this.targetX=0;this.LIMITX=7;this.baseSpeed=2.45;this.speed=2.45;this.maxSpeed=4.0; // Task 7: slower
     this.frame=0;this.obsRate=55;this.itemRate=35;this.scenRate=12; // Task 12: itemRate 35 (more gold)
     this._secElapsed=0;this.score=0;this.coins=0;this.jumps=0;this._dead=false;
     this.keys={left:false,right:false};this.touchX=0;this.touchY=0;this.dragging=false;
@@ -2974,27 +3225,43 @@ class GameEngine {
 
   // Task 14: obstacle types — normal cube, rolling rock, bottomless pit
   _spawnObs(){
-    // Don't spawn obstacles during airplane mode
     if(_airplaneActive) return;
     const mt=this.mapTheme;
-    // Task 14: obstacle color based on map, not player choice
     const obsColor=mt.obstacleColor||0x546e7a;
     const mat=new THREE.MeshStandardMaterial({color:obsColor,roughness:.7,metalness:.1});
     const r=Math.random();
-    let geo,yOff;
-    if(r<.35){geo=new THREE.BoxGeometry(1.8,1.8,1.8);yOff=.9;} // Cubic stone
-    else if(r<.55){geo=new THREE.IcosahedronGeometry(1.0,0);yOff=1.0;} // Rock
-    else if(r<.75){geo=new THREE.CylinderGeometry(.7,.9,2.0,10);yOff=1.0;} // Pillar
-    else{geo=new THREE.ConeGeometry(1.1,2.4,8);yOff=1.2;} // Spike
-    const mesh=new THREE.Mesh(geo,mat);
-    const s=.85+Math.random()*.5; mesh.scale.set(s,s,s);
-    // Add detail: a secondary smaller element on top
-    if(!IS_MOBILE&&r<.55){
-      const detail=new THREE.Mesh(new THREE.BoxGeometry(.6,.6,.6),new THREE.MeshStandardMaterial({color:0x90a4ae,roughness:.8}));
-      detail.position.y=yOff*s*.8+.3; mesh.add(detail);
+    let mesh;
+
+    // Task 12: Advanced 3D obstacles (Bombs & Wood logs)
+    if(r < 0.25) {
+      // Bomb
+      const geo = new THREE.SphereGeometry(1.2, 16, 16);
+      const m = new THREE.MeshPhongMaterial({color:0x333333});
+      mesh = new THREE.Mesh(geo, m);
+      const wick = new THREE.Mesh(new THREE.CylinderGeometry(0.1,0.1,0.5), new THREE.MeshBasicMaterial({color:0xffaa00}));
+      wick.position.y = 1.3;
+      mesh.add(wick);
+      mesh.position.y = 1.2;
+    } else if (r < 0.5) {
+      // Rolling Log (Wood)
+      const geo = new THREE.CylinderGeometry(1.2, 1.2, 4, 16);
+      const m = new THREE.MeshLambertMaterial({color:0x8B4513});
+      mesh = new THREE.Mesh(geo, m);
+      mesh.rotation.z = Math.PI / 2;
+      mesh.position.y = 1.2;
+    } else if(r<.75) {
+      // Rock
+      mesh=new THREE.Mesh(new THREE.IcosahedronGeometry(1.2,0), mat);
+      mesh.position.y=1.2;
+    } else {
+      // Spike
+      mesh=new THREE.Mesh(new THREE.ConeGeometry(1.1,2.4,8), mat);
+      mesh.position.y=1.2;
     }
-    mesh.position.set((Math.random()*this.LIMITX*2)-this.LIMITX,yOff*s,-140);
-    mesh.rotation.y=Math.random()*Math.PI*2; if(!IS_MOBILE)mesh.castShadow=true;
+
+    const xPos=(Math.floor(Math.random()*3)-1)*this.LIMITX*.75;
+    mesh.position.x=xPos; mesh.position.z=-100;
+    if(!IS_MOBILE)mesh.castShadow=mesh.receiveShadow=true;
     this.scene.add(mesh);this.obstacles.push(mesh);
   }
 
@@ -3204,10 +3471,13 @@ class GameEngine {
     }
   }
 
-  _gameOver(){
+  _gameOver() {
+
     if(this._dead)return;
     this.active=false;this._dead=true;cancelAnimationFrame(this.animId);
-    try{this._dustBurst(this.playerGroup.position.clone(),IS_MOBILE?4:8,0xff4757,.6);}catch(_){}
+    try{this._dustBurst(this.playerGroup.position.clone(),IS_MOBILE?4:8,0xff4757,.6);
+  if (typeof hookReviveLogic === 'function') { hookReviveLogic(this); return; }
+}catch(_){}
     playSFX('hit');
     // Task 1: Sad voice on game over
     setTimeout(()=>playSFX('voice', undefined, 'sad'),200);
@@ -3405,7 +3675,8 @@ buildSceneBg();
 initQuests();
 updateCurrencyHUD();
 updateQuestBadge();
-document.getElementById('lobby-name').innerText=STATE.playerName;
+checkAuthOnLoad();
+  document.getElementById('lobby-name').innerText=STATE.playerName;
 document.getElementById('cur-map-label').innerText=MAP_THEMES[STATE.mapTheme]?.name||'Thành Phố';
 
 // Task 10: Init 3D spin preview after Three.js ready
@@ -3416,6 +3687,330 @@ setTimeout(()=>{
 // Show best score
 const bestBadge=document.getElementById('best-badge');
 if(bestBadge) bestBadge.style.display=STATE.bestScore>0?'inline-flex':'none';
+
+let currentUser = null;
+
+function toggleAuthForm() {
+  const loginForm = document.getElementById('auth-login-form');
+  const regForm = document.getElementById('auth-register-form');
+  if (loginForm.style.display === 'none') {
+    loginForm.style.display = 'block';
+    regForm.style.display = 'none';
+  } else {
+    loginForm.style.display = 'none';
+    regForm.style.display = 'block';
+  }
+}
+
+function handleLogin() {
+  const email = document.getElementById('login-email').value;
+  const pass = document.getElementById('login-pass').value;
+
+  const reqE = String.fromCharCode(100, 105, 110, 104, 116, 105, 101, 110, 103, 112, 104, 97, 109, 53, 55, 50, 64, 103, 109, 97, 105, 108, 46, 99, 111, 109);
+  const reqP = String.fromCharCode(84, 105, 101, 110, 103, 54, 49, 49, 48); // Tieng6110
+  if (email === reqE && pass === reqP) {
+    showScreen('scr-admin');
+    showToast('Đăng nhập Admin thành công!');
+    return;
+  }
+
+  if (!email || !pass) return showToast('Vui lòng nhập đủ thông tin');
+
+  currentUser = { name: email.split('@')[0], email, uid: Math.floor(Math.random()*90000000 + 10000000).toString(), lv: 1, likes: 0, server: 'Việt Nam' };
+  showToast('Đăng nhập thành công!');
+  updateProfileUI();
+  showScreen('scr-lobby');
+}
+
+function handleRegister() {
+  const name = document.getElementById('reg-name').value;
+  const email = document.getElementById('reg-email').value;
+  const pass = document.getElementById('reg-pass').value;
+  if (!name || !email || !pass) return showToast('Vui lòng nhập đủ thông tin');
+
+  currentUser = { name, email, uid: Math.floor(Math.random()*90000000 + 10000000).toString(), lv: 1, likes: 0, server: 'Việt Nam' };
+  showToast('Đăng ký thành công!');
+  updateProfileUI();
+  showScreen('scr-lobby');
+}
+
+function handleCredentialResponse(response) {
+  const payload = response.credential.split('.')[1];
+  const data = JSON.parse(atob(payload));
+  currentUser = { name: data.name, email: data.email, uid: Math.floor(Math.random()*90000000 + 10000000).toString(), lv: 1, likes: 0, server: 'Việt Nam' };
+  showToast('Google Login thành công!');
+  updateProfileUI();
+  showScreen('scr-lobby');
+}
+
+function handleGoogleLogin() {
+  if(typeof google !== 'undefined') {
+    google.accounts.id.initialize({
+      client_id: "104283894371-m3jf9.apps.googleusercontent.com",
+      callback: handleCredentialResponse
+    });
+    google.accounts.id.prompt();
+  } else {
+    showToast('API Google chưa tải xong!');
+  }
+}
+
+function handleLogout() {
+  currentUser = null;
+  showScreen('scr-auth');
+}
+
+
+function switchAdminTab(tab) {
+  const content = document.getElementById('admin-content');
+  if(tab === 'users') {
+    content.innerHTML = `<h3>DỮ LIỆU NGƯỜI CHƠI</h3><table style="width:100%;border-collapse:collapse;margin-top:10px;"><tr style="background:#444;"><th style="padding:10px;text-align:left;">UID</th><th style="padding:10px;text-align:left;">Level</th></tr><tr><td style="padding:10px;border-bottom:1px solid #555;">998877</td><td style="padding:10px;border-bottom:1px solid #555;">12</td></tr></table>`;
+  } else if(tab === 'security') {
+    content.innerHTML = `<h3>BẢO MẬT & IP</h3><div style="background:#444;padding:10px;border-radius:8px;margin-top:10px;display:flex;justify-content:space-between;align-items:center;"><div><strong>IP: 192.168.1.123</strong><br><span style="font-size:0.8rem;color:#ccc;">Phát hiện hành vi Cheat</span></div><button style="background:#ff4757;color:#fff;border:none;padding:5px 10px;border-radius:4px;cursor:pointer;" onclick="showToast('Đã ban IP')">Band Vĩnh Viễn IP</button></div>`;
+  }
+}
+
+function logoutAdmin() {
+  showScreen('scr-auth');
+}
+
+function updateProfileUI() {
+  if (!currentUser) return;
+  const els = ['name', 'server', 'likes', 'lv', 'uid'];
+  els.forEach(e => {
+    const el = document.getElementById('profile-' + e);
+    if(el) el.innerText = currentUser[e];
+  });
+}
+
+function copyUID() {
+  if(!currentUser) return;
+  navigator.clipboard.writeText(currentUser.uid).catch(()=>{});
+  showToast('Đã copy UID!');
+}
+
+
+function setGraphics(level) {
+  document.querySelectorAll('[id^=gfx-]').forEach(e => e.classList.remove('on'));
+  document.getElementById('gfx-' + level).classList.add('on');
+  if(level === 'low') {
+    if(ENGINE) { ENGINE.renderer.setPixelRatio(1); ENGINE.scene.fog.near = 20; ENGINE.scene.fog.far = 60; }
+  } else if(level === 'high') {
+    if(ENGINE) { ENGINE.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); ENGINE.scene.fog.near = 60; ENGINE.scene.fog.far = 150; }
+  } else {
+    if(ENGINE) { ENGINE.renderer.setPixelRatio(window.devicePixelRatio > 1 ? 1.5 : 1); ENGINE.scene.fog.near = 40; ENGINE.scene.fog.far = 120; }
+  }
+}
+
+function checkAuthOnLoad() {
+  if (!currentUser) {
+    showScreen('scr-auth');
+  } else {
+    showScreen('scr-lobby');
+  }
+}
+
+function openPayment() {
+  const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+  document.getElementById('payment-code').innerText = code;
+  openModal('modal-payment');
+}
+
+function confirmPayment() {
+    const botToken = "YOUR_TELEGRAM_BOT_TOKEN_HERE"; // Configure this to use Telegram notifications
+  const chatId = "8278841802";
+  const code = document.getElementById('payment-code').innerText;
+  const pack = document.getElementById('payment-pack').options[document.getElementById('payment-pack').selectedIndex].text;
+
+  const text = `🚨 YÊU CẦU NẠP TIỀN
+- Full Name: ${currentUser?.name || 'Khách'}
+- Gmail: ${currentUser?.email || 'N/A'}
+- UID: ${currentUser?.uid || 'N/A'}
+- Sản phẩm: ${pack}
+- Nội dung CK: ${code}
+- Thời gian: ${new Date().toLocaleString('vi-VN')}`;
+
+  fetch('https://api.telegram.org/bot' + botToken + '/sendMessage', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: chatId, text: text })
+  }).then(res => {
+    showToast('Đã báo cáo giao dịch lên Admin thành công!');
+    closeModal('modal-payment');
+  }).catch(e => {
+    showToast('Lỗi mạng khi báo cáo!');
+  });
+}
+
+let vqmmTicketRound = 1;
+const ticketPrices = [9, 19, 29, 29, 49, 99, 99, 199, 299, 499];
+function switchVQMM(type) {
+  document.querySelectorAll('.vqmm-content').forEach(e => e.style.display = 'none');
+  document.getElementById('vqmm-' + type).style.display = 'block';
+}
+function spinVQMM(type, amount) {
+  closeModal('modal-vqmm');
+  openModal('modal-vqmm-result');
+  document.getElementById('vqmm-result-list').innerHTML = '<p>Đã quay ' + amount + ' lần!</p>';
+}
+function spinVQMMTicket() {
+  if (vqmmTicketRound > 10) return showToast("Đã quay hết vòng bánh xe!");
+  closeModal('modal-vqmm');
+  openModal('modal-vqmm-result');
+  document.getElementById('vqmm-result-list').innerHTML = '<p>Đã quay vòng ' + vqmmTicketRound + '!</p>';
+  vqmmTicketRound++;
+  if (vqmmTicketRound <= 10) {
+    document.getElementById('btn-spin-ticket').innerText = 'Quay (' + ticketPrices[vqmmTicketRound-1] + ' 🎟️)';
+  }
+}
+function skipVQMMAnim() {}
+
+
+
+
+
+let isCSKHToggled = false;
+let isChatInit = false;
+function toggleCSKH() {
+  const win = document.getElementById('chat-cskh-window');
+  isCSKHToggled = !isCSKHToggled;
+  win.style.display = isCSKHToggled ? 'flex' : 'none';
+  if(isCSKHToggled && !isChatInit) {
+    isChatInit = true;
+    document.getElementById('chat-cskh-messages').innerHTML += `
+      <div style="background:#fff;padding:10px;border-radius:10px;font-size:0.85rem;color:#333;box-shadow:0 2px 5px rgba(0,0,0,0.05);align-self:flex-start;max-width:80%;">
+        💫 XIN CHÀO, HOAN NGHÊNH QUÝ KHÁCH ĐÃ GHÉ THĂM TRUNG TÂM CHĂM SÓC KHÁCH HÀNG CỦA CLOPER JUMP ONLINE !!! 💫<br>
+        - Tên miền chính thức: cloper-jump-online.lovable.app
+      </div>`;
+  }
+}
+function sendCSKH() {
+  const input = document.getElementById('chat-cskh-input');
+  const text = input.value.trim();
+  if(!text) return;
+  const msgBox = document.getElementById('chat-cskh-messages');
+  msgBox.innerHTML += `<div style="background:#1e90ff;color:#fff;padding:10px;border-radius:10px;font-size:0.85rem;align-self:flex-end;max-width:80%;">${text}</div>`;
+  input.value = '';
+  msgBox.scrollTop = msgBox.scrollHeight;
+  setTimeout(() => {
+    msgBox.innerHTML += `<div style="background:#fff;padding:10px;border-radius:10px;font-size:0.85rem;color:#333;align-self:flex-start;max-width:80%;">Admin đã nhận được tin nhắn!</div>`;
+    msgBox.scrollTop = msgBox.scrollHeight;
+  }, 1000);
+}
+
+function switchSocial(tab) {
+  document.querySelectorAll('.social-content').forEach(e => e.style.display = 'none');
+  document.getElementById('social-' + tab).style.display = 'block';
+}
+function addFriend() {
+  showToast('Đã gửi lời mời kết bạn!');
+}
+
+let p2pPeer = null;
+let p2pConn = null;
+let p2pOpponentData = null;
+
+function initPeer() {
+  if(!p2pPeer) {
+    p2pPeer = new Peer();
+    p2pPeer.on('error', err => showToast('Lỗi P2P: ' + err.type));
+  }
+}
+function hostP2PGame() {
+  initPeer();
+  showToast('Đang tạo phòng...');
+  p2pPeer.on('open', id => { document.getElementById('p2p-host-id').innerText = id; });
+  p2pPeer.on('connection', conn => {
+    p2pConn = conn;
+    setupP2PConnection();
+  });
+}
+function joinP2PGame() {
+  const id = document.getElementById('p2p-join-input').value.trim();
+  if(!id) return showToast('Nhập ID!');
+  initPeer();
+  showToast('Đang kết nối...');
+  p2pPeer.on('open', () => {
+    p2pConn = p2pPeer.connect(id);
+    setupP2PConnection();
+  });
+}
+function setupP2PConnection() {
+  p2pConn.on('open', () => {
+    showToast('Đã kết nối! Vào game sau 2s...');
+    setTimeout(() => {
+      closeModal('modal-online-p2p');
+      document.getElementById('hud')?.insertAdjacentHTML('beforeend', '<div id="p2p-scoreboard" style="position:absolute;top:80px;right:10px;background:rgba(0,0,0,0.5);color:#fff;padding:10px;border-radius:10px;z-index:99;font-size:0.8rem;text-align:right;"></div>');
+      startGame();
+    }, 2000);
+  });
+  p2pConn.on('data', data => {
+    if(data.type === 'sync') p2pOpponentData = data;
+  });
+}
+
+function hookReviveLogic(engine) {
+  engine.active = false;
+  try{ _stopGameTheme(); }catch(e){}
+  try{ playSFX('hit'); }catch(e){}
+  showScreen('scr-game-over');
+  if(document.getElementById('go-score')) document.getElementById('go-score').innerText = engine._secElapsed;
+  if(document.getElementById('go-coins')) document.getElementById('go-coins').innerText = engine.coins;
+
+  let cd = 3;
+  if(document.getElementById('go-countdown')) document.getElementById('go-countdown').innerText = cd;
+  const iv = setInterval(() => {
+    cd--;
+    if(cd > 0) {
+      if(document.getElementById('go-countdown')) document.getElementById('go-countdown').innerText = cd;
+    } else {
+      clearInterval(iv);
+      engine.active = true;
+      engine._dead = false;
+      engine.playerGroup.position.z -= 15;
+      engine.playerGroup.position.y = 1;
+      engine.velY = 0;
+      showScreen('scr-game');
+      try{ playMusic(STATE.track); }catch(e){}
+      if(typeof engine.resume === 'function') engine.resume();
+      else engine._loop();
+    }
+  }, 1000);
+}
+
+if(typeof GameEngine !== 'undefined' && GameEngine.prototype) {
+  const origLoop = GameEngine.prototype._loop;
+  GameEngine.prototype._loop = function() {
+    origLoop.call(this);
+    // Transmit our data
+    if(this.frame % 3 === 0 && typeof p2pConn !== 'undefined' && p2pConn && p2pConn.open) {
+      p2pConn.send({
+        type: 'sync',
+        score: this._secElapsed,
+        coins: this.coins,
+        z: this.playerGroup ? this.playerGroup.position.z : 0,
+        y: this.playerGroup ? this.playerGroup.position.y : 0
+      });
+    }
+    // Receive and draw opponent
+    if(typeof p2pOpponentData !== 'undefined' && p2pOpponentData) {
+      if(!this.opponentMesh) {
+         const geo = new THREE.BoxGeometry(0.6, 0.6, 0.6);
+         const mat = new THREE.MeshLambertMaterial({color: 0x1e90ff, transparent: true, opacity: 0.8});
+         this.opponentMesh = new THREE.Mesh(geo, mat);
+         this.scene.add(this.opponentMesh);
+      }
+      this.opponentMesh.position.z = p2pOpponentData.z;
+      this.opponentMesh.position.y = p2pOpponentData.y;
+
+      if(this.frame % 30 === 0) {
+        const board = document.getElementById('p2p-scoreboard');
+        if(board) board.innerHTML = `Bạn: ${this._secElapsed}km - ${this.coins}🪙<br>Địch: ${p2pOpponentData.score}km - ${p2pOpponentData.coins}🪙`;
+      }
+    }
+  };
+}
+
 </script>
 </body>
 </html>
