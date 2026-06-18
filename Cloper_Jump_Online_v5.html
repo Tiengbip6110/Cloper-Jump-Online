@@ -207,6 +207,23 @@ body{font-family:'Nunito',sans-serif;background:#e8f4ff;color:#1a1a2e;overflow:h
   <div style="position:absolute;bottom:10px;color:rgba(26,26,46,.22);font-size:.62rem;letter-spacing:2px;z-index:2">v5.0 • CLOPER JUMP ONLINE</div>
 </div>
 
+<!-- ══════════════ MISSIONS MODAL ══════════════ -->
+<div id="scr-mission" class="screen lobby-bg">
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;height:100%;width:100%;max-width:460px;padding:20px 18px 0;margin:0 auto;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+      <button class="btn-sec" style="padding:9px 15px;border-radius:13px;font-size:1rem;flex-shrink:0" onclick="showScreen('scr-lobby')">◀</button>
+      <h2 style="font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:900;color:#1a1a2e;letter-spacing:2px" id="txt-mission-title">📋 NHIỆM VỤ</h2>
+      <div style="margin-left:auto;background:rgba(255,255,255,.8);padding:6px 12px;border-radius:12px;font-weight:900;color:#1a1a2e;display:flex;align-items:center;gap:4px;">
+        💎 <span id="txt-diamonds-count">0</span>
+      </div>
+    </div>
+
+    <div id="mission-list" style="flex:1;overflow-y:auto;padding-bottom:20px;display:flex;flex-direction:column;gap:10px;">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════ SKIN SELECT ══════════════ -->
 <div id="scr-skin" class="screen lobby-bg">
   <div style="position:absolute;top:0;left:0;right:0;height:180px;background:linear-gradient(180deg,#e3f2fd 0%,transparent 100%);pointer-events:none"></div>
@@ -382,7 +399,42 @@ const STATE = {
   obstacleSkin: 'wood',
   bestScore: 0,
   skinTab: 'player',
+  bgmTrack: 'energy',
+  volMusic: 0.5,
+  volSFX: 0.8,
+  diamonds: 0,
+  unlockedSkins: ['cat', 'dog', 'wood', 'stone'],
+  missions: [
+    {id: 'm1', desc: 'Chơi 5 lần', max: 5, curr: 0, reward: 10, done: false},
+    {id: 'm2', desc: 'Thu thập 100 vàng', max: 100, curr: 0, reward: 15, done: false},
+    {id: 'm3', desc: 'Đạt 500 điểm', max: 500, curr: 0, reward: 20, done: false}
+  ]
 };
+
+function saveState(){
+  localStorage.setItem('cloperJumpState', JSON.stringify(STATE));
+}
+
+function loadState(){
+  const saved = localStorage.getItem('cloperJumpState');
+  if(saved){
+    try {
+      const parsed = JSON.parse(saved);
+      Object.assign(STATE, parsed);
+
+      if(STATE.diamonds === undefined) STATE.diamonds = 0;
+      if(!STATE.unlockedSkins) STATE.unlockedSkins = ['cat', 'dog', 'wood', 'stone'];
+      if(!STATE.missions) {
+        STATE.missions = [
+          {id: 'm1', desc: 'Chơi 5 lần', max: 5, curr: 0, reward: 10, done: false},
+          {id: 'm2', desc: 'Thu thập 100 vàng', max: 100, curr: 0, reward: 15, done: false},
+          {id: 'm3', desc: 'Đạt 500 điểm', max: 500, curr: 0, reward: 20, done: false}
+        ];
+      }
+    } catch(e){}
+  }
+}
+loadState();
 
 // ══════════════════════════════════════════════════
 //  LANGUAGE
@@ -628,6 +680,7 @@ function showScreen(id){
   if(id==='scr-lb')   buildLB();
   if(id==='scr-howto')buildHowTo();
   if(id==='scr-lobby')updateLobbyBest();
+  if(id==='scr-mission')buildMissions();
 }
 
 function updateLobbyBest(){
@@ -824,29 +877,39 @@ function switchTab(tab){
 function renderSkinGrid(){
   const grid = document.getElementById('skin-grid-inner');
   grid.innerHTML='';
+
+  const renderItem = (skin, isOn, isPlayer) => {
+    const isUnlocked = STATE.unlockedSkins.includes(skin.id);
+    const div = document.createElement('div');
+    div.className='skin-card'+(isOn?' on':'');
+    div.onclick=()=> {
+      if(isUnlocked) selectSkin(skin.id);
+      else buySkin(skin.id, skin.cost);
+    };
+    const hex = isPlayer ? `#${skin.baseColor.toString(16).padStart(6,'0')}` : `#${skin.color.toString(16).padStart(6,'0')}`;
+    div.innerHTML=`<div class="skin-dot" style="${isPlayer ? 'width:44px;height:44px;' : ''}border-radius:10px;background:${hex};box-shadow:${isOn?`0 0 0 3px #ff4757,0 4px 14px ${hex}88`:`0 2px 8px ${hex}33`};${!isUnlocked ? 'filter:grayscale(1);opacity:0.6;' : ''}">${skin.emoji}</div>
+    <div style="font-size:.68rem;font-weight:700;color:${isOn?'#ff4757':'rgba(26,26,46,.6)'};text-align:center;line-height:1.25">${skin.name}</div>
+    ${isOn ? '<div style="font-size:.58rem;color:#ff4757;background:rgba(255,71,87,.1);padding:2px 7px;border-radius:8px;letter-spacing:1px">✓</div>' : (!isUnlocked ? `<div style="font-size:.6rem;color:#1e90ff;font-weight:900;">💎 ${skin.cost}</div>` : '')}`;
+    grid.appendChild(div);
+  };
+
   if(STATE.skinTab==='player'){
-    ANIMAL_SKINS.forEach(skin=>{
-      const isOn = skin.id===_tempPlayer;
-      const div = document.createElement('div');
-      div.className='skin-card'+(isOn?' on':'');
-      div.onclick=()=>selectSkin(skin.id);
-      div.innerHTML=`<div class="skin-dot" style="width:44px;height:44px;border-radius:10px;background:#${skin.baseColor.toString(16).padStart(6,'0')};box-shadow:${isOn?`0 0 0 3px #ff4757,0 4px 14px #${skin.baseColor.toString(16).padStart(6,'0')}88`:`0 2px 8px #${skin.baseColor.toString(16).padStart(6,'0')}33`}">${skin.emoji}</div>
-      <div style="font-size:.68rem;font-weight:700;color:${isOn?'#ff4757':'rgba(26,26,46,.6)'};text-align:center;line-height:1.25">${skin.name}</div>
-      ${isOn?'<div style="font-size:.58rem;color:#ff4757;background:rgba(255,71,87,.1);padding:2px 7px;border-radius:8px;letter-spacing:1px">✓</div>':''}`;
-      grid.appendChild(div);
-    });
+    ANIMAL_SKINS.forEach(skin=>renderItem(skin, skin.id===_tempPlayer, true));
   } else {
-    OBS_SKINS.forEach(skin=>{
-      const isOn = skin.id===_tempObs;
-      const div = document.createElement('div');
-      div.className='skin-card'+(isOn?' on':'');
-      div.onclick=()=>selectSkin(skin.id);
-      const hex='#'+skin.color.toString(16).padStart(6,'0');
-      div.innerHTML=`<div class="skin-dot" style="background:${hex};box-shadow:${isOn?`0 0 0 3px #ff4757,0 4px 14px ${hex}88`:`0 2px 8px ${hex}33`}">${skin.emoji}</div>
-      <div style="font-size:.68rem;font-weight:700;color:${isOn?'#ff4757':'rgba(26,26,46,.6)'};text-align:center;line-height:1.25">${skin.name}</div>
-      ${isOn?'<div style="font-size:.58rem;color:#ff4757;background:rgba(255,71,87,.1);padding:2px 7px;border-radius:8px;letter-spacing:1px">✓</div>':''}`;
-      grid.appendChild(div);
-    });
+    OBS_SKINS.forEach(skin=>renderItem(skin, skin.id===_tempObs, false));
+  }
+}
+
+function buySkin(id, cost){
+  if(STATE.diamonds >= cost){
+    if(confirm(`Bạn muốn mua skin này với giá ${cost} 💎?`)){
+      STATE.diamonds -= cost;
+      STATE.unlockedSkins.push(id);
+      saveState();
+      renderSkinGrid();
+    }
+  } else {
+    alert(`Bạn không đủ 💎 Kim cương! Cần ${cost} 💎.`);
   }
 }
 
@@ -1230,6 +1293,11 @@ class GameEngine {
     setTimeout(()=>{
       const total=this.score+this.coins*20;
       if(total>STATE.bestScore) STATE.bestScore=total;
+
+      updateMissionProgress('play', 1);
+      updateMissionProgress('coin', this.coins);
+      updateMissionProgress('score', total);
+
       document.getElementById('over-score').innerText=this.score;
       document.getElementById('over-coins').innerText=this.coins;
       document.getElementById('over-total').innerText=total.toLocaleString();
@@ -1368,6 +1436,52 @@ class GameEngine {
     if(this.renderer&&wrap.contains(this.renderer.domElement)) wrap.removeChild(this.renderer.domElement);
     this.renderer&&this.renderer.dispose();
   }
+}
+
+// ══════════════════════════════════════════════════
+//  MISSIONS LOGIC
+// ══════════════════════════════════════════════════
+function buildMissions(){
+  document.getElementById('txt-diamonds-count').innerText = STATE.diamonds;
+  const list = document.getElementById('mission-list');
+  if(!STATE.missions) return;
+  list.innerHTML = STATE.missions.map(m => {
+    const pct = Math.min(100, (m.curr / m.max) * 100);
+    const canClaim = m.curr >= m.max && !m.done;
+    return `
+      <div class="card" style="padding:14px;display:flex;align-items:center;gap:12px;opacity:${m.done?0.6:1}">
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:.9rem;color:#1a1a2e;margin-bottom:6px;">${m.desc}</div>
+          <div style="width:100%;height:6px;background:rgba(26,26,46,.1);border-radius:3px;overflow:hidden;margin-bottom:4px;">
+            <div style="height:100%;width:${pct}%;background:${m.done?'#2ecc71':'#ff4757'};"></div>
+          </div>
+          <div style="font-size:.7rem;color:rgba(26,26,46,.5);">${m.curr}/${m.max}</div>
+        </div>
+        <button class="btn-sec" style="padding:6px 12px;font-size:.8rem;${canClaim?'background:#ff4757;color:#fff;border:none;':m.done?'display:none;':'opacity:0.5;pointer-events:none;'}" onclick="claimMission('${m.id}')">
+          Nhận ${m.reward} 💎
+        </button>
+        ${m.done ? '<div style="font-size:1.2rem;color:#2ecc71;">✅</div>' : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function claimMission(id){
+  const m = STATE.missions.find(x => x.id === id);
+  if(m && m.curr >= m.max && !m.done){
+    m.done = true;
+    STATE.diamonds += m.reward;
+    saveState();
+    buildMissions();
+    updateLobbyBest();
+  }
+}
+
+function updateMissionProgress(type, amount){
+  if(type === 'play') STATE.missions[0].curr += amount;
+  if(type === 'coin') STATE.missions[1].curr += amount;
+  if(type === 'score' && STATE.missions[2].curr < amount) STATE.missions[2].curr = amount;
+  saveState();
 }
 
 // ══════════════════════════════════════════════════
